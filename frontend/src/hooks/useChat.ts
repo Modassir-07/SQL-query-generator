@@ -6,7 +6,13 @@ import type { Message, AgentEvent } from '../types';
 // missing entirely, so fall back to a manual UUID v4 generator instead.
 const generateUUID = (): string => {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-        return crypto.randomUUID();
+        try {
+            return crypto.randomUUID();
+        } catch {
+            // Some browsers (e.g. Brave's fingerprinting protection) expose
+            // crypto.randomUUID as a function but throw when it's actually
+            // called on a non-HTTPS origin. Fall through to the manual UUID.
+        }
     }
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         const r = (Math.random() * 16) | 0;
