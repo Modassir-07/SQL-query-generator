@@ -1,0 +1,32 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/SQL-query-generator
+            git checkout -- .
+            git pull origin main
+
+            cd backend
+            source $HOME/.local/bin/env
+            uv sync
+            sudo systemctl restart sqlagent
+
+            cd ../frontend
+            echo "VITE_API_URL=http://13.53.59.152:8000" > .env
+            npm install
+            npm run build
+            sudo rm -rf /var/www/html/*
+            sudo cp -r dist/* /var/www/html/
