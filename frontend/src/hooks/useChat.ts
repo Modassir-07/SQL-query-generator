@@ -49,7 +49,12 @@ export const useChat = () => {
         setMessages(prev => [...prev, userMsg]);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/chat`, {
+            // Default: relative path, same origin as the page (works when
+            // nginx reverse-proxies /api to the backend). For local dev
+            // where frontend and backend run on different ports, set
+            // VITE_API_URL=http://localhost:8000 in frontend/.env.
+            const apiBase = import.meta.env.VITE_API_URL ?? '';
+            const response = await fetch(`${apiBase}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
