@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import type { AgentEvent } from '../types';
 import { cn } from '../lib/utils';
-import { CheckCircle2, Circle, Clock, AlertCircle, ArrowRight, Table, Code2, BrainCircuit } from 'lucide-react';
+import { CheckCircle2, Circle, AlertCircle, ArrowRight, Code2, BrainCircuit } from 'lucide-react';
 
 interface TraceMonitorProps {
     events: AgentEvent[];
